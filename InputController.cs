@@ -7,6 +7,9 @@ public class InputController : MonoBehaviour
     public float speed;
 
     private Rigidbody rb;
+    
+    private Vector2 initialPosition; 
+    private bool isFingerTouching = true;
 
     // Start is called before the first frame update
     void Start()
@@ -16,20 +19,24 @@ public class InputController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-
     {
-        var initialPosition = Input.mousePosition;
-        bool isFingerTouching = true;
-
-        if (Input.GetMouseButtonDown(0) && isFingerTouching == true)
+        if(Input.GetMouseButtonDown(0))
         {
-            Vector3 movement = (Input.mousePosition - initialPosition);
-            
+            isFingerTouching = true;
+            initialPosition = Input.mousePosition;
+        }
+    
+
+        if (Input.GetMouseButton(0) && isFingerTouching == true)
+        {
+            var diff = (Input.mousePosition - initialPosition).Normalized * speed;
+            rb.velocity = new Vector3 (diff.x, 0, diff.y);
         }
 
-        else if (Input.GetMouseButtonDown(0) && isFingerTouching == false)
+        if (Input.GetMouseButtonDown(0) && isFingerTouching == false)
         {
-            speed = 0;
+            rb.velocity = Vector3.Zero;
+            isFingerTouching = false;
         }
     }
 }
